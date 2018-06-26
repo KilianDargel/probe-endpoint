@@ -1,0 +1,9 @@
+http:
+  enabled: true
+  httpPort: 80
+
+speedtest:
+  enabled: true
+
+iperf:
+  enabled: true

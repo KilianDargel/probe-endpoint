@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "probe-endpoint.fullname" . }}
+  labels:
+    app: {{ template "probe-endpoint.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "probe-endpoint.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        {{- if .Values.iperf.enabled }}
+        - name: probe-endpoint-iperf
+          image: travelping/nettools
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              iperf3 -s
+        {{- end }}
+        {{- if .Values.http.enabled }}
+        - name: probe-endpoint-http
+          image: travelping/nettools
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              curl -L https://github.com/mgumz/knut/tarball/v1.0.1 | tar zx
+          ports:
+            - containerPort: {{ .Values.http.httpPort }}
+              name: http
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

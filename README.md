@@ -16,7 +16,7 @@ The probe endpoint can be deployed in order to create an IP endpoint for several
 The probe endpoint is deployed using helm:
 
 ```
-helm install probe-endponit
+helm install probe-endpoint
 ```
 
 ## Configuration
