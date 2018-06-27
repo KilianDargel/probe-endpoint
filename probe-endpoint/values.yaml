@@ -7,3 +7,6 @@ speedtest:
 
 iperf:
   enabled: true
+  mode: -s
+  options: -p 5201
+  iperfport: 5201

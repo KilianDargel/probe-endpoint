@@ -19,12 +19,16 @@ spec:
         {{- if .Values.iperf.enabled }}
         - name: probe-endpoint-iperf
           image: travelping/nettools
+          ports:
+            - containerPort: {{ .Values.iperf.iperfport }}
+              name: iperf
           command: ["/bin/sh"]
           args:
             - -c
             - |
-              iperf3 -s
+              iperf3 {{ .Values.iperf.mode }} {{ .Values.iperf.options }}
         {{- end }}
+
         {{- if .Values.http.enabled }}
         - name: probe-endpoint-http
           image: travelping/nettools
@@ -37,6 +41,7 @@ spec:
             - containerPort: {{ .Values.http.httpPort }}
               name: http
         {{- end }}
+
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
