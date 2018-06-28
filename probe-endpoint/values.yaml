@@ -2,8 +2,11 @@ http:
   enabled: true
   httpPort: 80
 
+
 speedtest:
   enabled: true
+  port: 8888
+  options: /:. /ding.txt:/tmp/dong.txt
 
 iperf:
   enabled: true

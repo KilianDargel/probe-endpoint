@@ -31,16 +31,28 @@ spec:
 
         {{- if .Values.http.enabled }}
         - name: probe-endpoint-http
-          image: travelping/nettools
-          command: ["/bin/sh"]
+          image: ubuntu
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              curl -L https://github.com/mgumz/knut/tarball/v1.0.1 | tar zx
+              apt-get update && apt-get install curl -y
+              curl -L https://github.com/mgumz/knut/releases/download/v1.0.1/knut.linux.x64.amd64 --output knut
+              chmod 755 knut
+              ./knut -bind=":{{ .Values.http.httpPort }}" {{ .Values.http.options }}
           ports:
             - containerPort: {{ .Values.http.httpPort }}
               name: http
         {{- end }}
+
+        {{- if .Values.speedtest.enabled }}
+        - name: probe-endpoint-speedtest
+          image: tianon/speedtest
+          ports:
+            - containerPort: {{ .Values.speedtest.port }}
+              name: speedtest-port
+        {{- end }}
+
 
     {{- with .Values.nodeSelector }}
       nodeSelector:
